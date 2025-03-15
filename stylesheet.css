@@ -1,0 +1,39 @@
+.container {
+    height: 768;
+    width: 768;
+    position: absolute;
+    position: relative;
+    border: 3px solid #4caf50;
+    background-color: #4caf50;
+}
+
+h1{
+    color:black;
+    text-align: center;
+}
+
+
+p {
+    color: black;
+    text-align: center;
+}
+
+.centeredLeft {
+    position: relative;
+    top: 50% ;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+button{
+    position: absolute;
+    top: 50% ;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+}
+
+.gameElement {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}

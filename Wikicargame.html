@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <link rel="stylesheet" href="stylesheet.css">
+    </head>
+    <title>Unassuming Car Game</title>
+    <body class = "container">
+        <p id="scoreboard">You have completed 0 laps</p>
+        <image id="gameBackground" src="Racetrack.png" alt="There really should be a racetrack here but..." class="centeredLeft">
+        <image id="player" src="Car.png" alt="Here be cars" class="gameElement"></image>
+        <image id="palm1" src="tree.png" alt="Mischevious Palm" class="gameElement">
+        <image id="palm2" src="tree.png" alt="Mischevious Palm" class="gameElement"></image>
+        <image id="palm3" src="tree.png" alt="Mischevious Palm" class="gameElement"></image>
+        <image id="palm4" src="tree.png" alt="Mischevious Palm" class="gameElement"></image>
+        <p></p>
+        <button onclick="startGame()">Click to start the game</button>
+    </body>
+</html>
+
+<script>
+    const articles = [
+        "https://www.wikipedia.org/",
+        "https://en.wikipedia.org/wiki/Revolution",
+        "https://en.wikipedia.org/wiki/Writer",
+        "https://en.wikipedia.org/wiki/JavaScript",
+        "https://en.wikipedia.org/wiki/Java",
+        "https://en.wikipedia.org/wiki/Moon_landing",
+        "https://en.wikipedia.org/wiki/Dakar",
+        "https://en.wikipedia.org/wiki/Raspberry_Pi",
+        "https://en.wikipedia.org/wiki/Charles_Darwin",
+        "https://en.wikipedia.org/wiki/GitHub"
+        
+    ];
+
+    const messages = [
+        "I'm back again!",
+        "Didn't think I'd go away for long did you?",
+        "Don't even bother dismissing the pages",
+        "Get used to me, I'm not leaving",
+        "Need a reminder?",
+        "Reminding you!",
+        "Hello again!",
+        "You're not in control of this, I am!",
+        "You can't stop me!",
+        "There's nothing you can do to stop this",
+        "I heard if you read all the webpages, the program will let you play the game normally",
+        "No one even reads these notifications. They just dismiss me like I'm worthless",
+        "Sorry... Actually nevermind",
+        "You need to start learning again",
+        "Get back to revision",
+        "Have you tried learning instead of playing"
+    ];
+
+
+    const DORANDOMEVENTS = true;
+    const PLAYERWIDTH = 96;
+    var audio = new Audio('music.wav');
+    audio.loop = true;
+    var openedWindows = []
+
+    var canvasWidth = 1250;
+    var canvasHeight = 650;
+    
+    var laps = 0;
+
+    var playerXPosition = 200;
+    var playerYPosition = 500;
+
+    //Palm Positions
+    var palm1X = 200;
+    var palm1Y = 200;
+
+    var palm2X = 30;
+    var palm2Y = 70;
+
+    var palm3X = 300;
+    var palm3Y = 700;
+
+    var palm4X = 250;
+    var palm4Y = 320;
+
+    //Checkpoint Variables
+    const CHECKPOINTSIZE = 100;
+
+    var checkPoint1X = 750;
+    var checkPoint1Y = 500;
+    var checkPoint1Passed = false;
+    var checkPoint2X = 750;
+    var checkPoint2Y = 200;
+    var checkPoint2Passed = false;
+    var checkPoint3X = 1160;
+    var checkPoint3Y = 300;
+    var checkPoint3Passed = false;
+    var exitedCheckpoint = true;
+
+    var playerDirection = 1;
+
+    var speed = 10;
+
+    var gameCanvas = {
+        setup: function(){
+            document.getElementById("gameBackground").style.backgroundImage = "racetrack.png";
+        }
+    }
+
+    var player = {
+        movePlayer: function(){
+            if (speed === 0){
+                playerYPosition += 50;
+                playerXPosition -= 3;
+                speed = 50;
+            }
+
+            switch(playerDirection % 4){
+                case 1:
+                    playerXPosition += speed;
+                    break;
+                case 2:
+                    playerYPosition -= speed;
+                    break;
+                case 3:
+                    playerXPosition -= speed;
+                    break;
+                case 0:
+                    playerYPosition += speed;
+                    break;
+            }
+            if (playerXPosition < 0){
+                playerXPosition = canvasWidth;
+            }
+            else if (playerXPosition > canvasWidth){
+                playerXPosition = 0;
+            }
+            if (playerYPosition < 0){
+                playerYPosition = canvasHeight;
+            }
+            else if (playerYPosition > canvasHeight)  {
+                playerYPosition = 0;
+            }
+
+            document.getElementById("player").style.top = `${playerYPosition}px`;
+            document.getElementById("player").style.left = `${playerXPosition}px`;
+            checkPlayerCheckpoints();
+        }
+    }
+
+    var palms = {
+        id: "1",
+        movePalm: function(){
+
+        }
+    }
+
+    function RandomEvent(){
+        chosenEffect = Math.floor(Math.random() * 6);
+        if (chosenEffect === 1){
+            GetWikiPage();
+        }
+        else if (chosenEffect === 2){
+            PushRandomNotification();
+        }
+        
+    }
+
+    function GetWikiPage(){
+        for (i = 0; i < 7; i++){
+            requestedArticle = Math.floor(Math.random() * articles.length);
+            positionX = Math.floor(Math.random() * 1000);
+            positionY = Math.floor(Math.random() * 500);
+            width = Math.floor(Math.random() * 1000) + 100;
+            height = Math.floor(Math.random() * 800) + 100;
+
+
+            openWindow = window.open(articles[requestedArticle], "_blank", `fullscreen=0,height=${height},width=${width},top=${positionY},left=${positionX}`);
+            openedWindows.push(openWindow);
+        }
+        window.alert("Here's a little light reading");
+        setTimeout(CloseWikiPages, 4000);
+    }
+
+    function CloseWikiPages(){
+        openedWindows.forEach(deleteWindow);
+    }
+
+    function deleteWindow(openWindow){
+        openWindow.close();
+    }
+
+    function PushRandomNotification(){
+        requestedRandomMessage = Math.floor(Math.random() * messages.length);
+        window.alert(messages[requestedRandomMessage]);
+    }
+
+    function checkPlayerCheckpoints(){
+        if ((playerXPosition + PLAYERWIDTH >= checkPoint1X) && (playerXPosition <= checkPoint1X + CHECKPOINTSIZE)){
+            if ((playerYPosition + PLAYERWIDTH >= checkPoint1Y) && (playerYPosition <= checkPoint1Y + CHECKPOINTSIZE)){
+                if (checkPoint3Passed === true && checkPoint2Passed === true){
+                    increaseLaps();
+                    checkPoint2Passed = false;
+                    checkPoint3Passed = false;
+                }
+                checkPoint1Passed = true;
+                console.log("Passed checkpoint 1");
+            }
+        }
+        if(((playerXPosition + PLAYERWIDTH) >= checkPoint2X) && (playerXPosition <= (checkPoint2X + CHECKPOINTSIZE))){
+            if (((playerYPosition + PLAYERWIDTH) >= checkPoint2Y) && (playerYPosition <= (checkPoint2Y + CHECKPOINTSIZE))){
+                if (checkPoint1Passed === true){
+                    checkPoint2Passed = true;
+                }
+                console.log("Passed checkpoint 2");
+            }
+        }
+        if (checkPoint1Passed === true && checkPoint2Passed === true){
+            console.log("Checkpoints 1 and 2 passed");
+        }
+        if(((playerXPosition + PLAYERWIDTH) >= checkPoint3X) && (playerXPosition <= (checkPoint3X + CHECKPOINTSIZE))){
+            if (((playerYPosition + PLAYERWIDTH) >= checkPoint3Y) && (playerYPosition <= (checkPoint3Y + CHECKPOINTSIZE))){
+                if (checkPoint2Passed === true){
+                    checkPoint3Passed = true;
+                }
+                console.log("Passed checkpoint 3");
+            }
+        }
+    }
+
+    function increaseLaps(){
+        laps += 1;
+        document.getElementById("scoreboard").innerHTML = `You have completed ${laps} laps`;
+    }
+
+    function movePalms(){
+        palm1X -= 14;
+        palm1Y += 14;
+
+        if (palm1Y < 0){
+            palm1Y = canvasHeight;
+        }
+        else if (palm1Y > canvasHeight){
+            palm1Y = 0;
+        }
+        if (palm1X < 0){
+            palm1X = canvasWidth;
+        }
+        else if (palm1X > canvasWidth){
+            palm1X = 0;
+        }
+        document.getElementById("palm1").style.top = `${palm1Y}px`;
+        document.getElementById("palm1").style.left = `${palm1X}px`;
+
+        palm2X += 4;
+        palm2Y -= 16;
+
+        if (palm2Y < 0){
+            palm2Y = canvasHeight;
+        }
+        else if (palm2Y > canvasHeight){
+            palm2Y = 0;
+        }
+        if (palm2X < 0){
+            palm2X = canvasWidth;
+        }
+        else if (palm2X > canvasWidth){
+            palm2X = 0;
+        }
+        document.getElementById("palm2").style.top = `${palm2Y}px`;
+        document.getElementById("palm2").style.left = `${palm2X}px`;
+
+        palm3X += 10;
+        palm3Y += 5;
+
+        if (palm3Y < 0){
+            palm3Y = canvasHeight;
+        }
+        else if (palm3Y > canvasHeight){
+            palm3Y = 0;
+        }
+        if (palm3X < 0){
+            palm3X = canvasWidth;
+        }
+        else if (palm3X > canvasWidth){
+            palm3X = 0;
+        }
+        document.getElementById("palm3").style.top = `${palm3Y}px`;
+        document.getElementById("palm3").style.left = `${palm3X}px`;
+
+        palm4X += 10;
+        palm4Y += 5;
+
+        if (palm4Y < 0){
+            palm4Y = canvasHeight;
+        }
+        else if (palm4Y > canvasHeight){
+            palm4Y = 0;
+        }
+        if (palm4X < 0){
+            palm4X = canvasWidth;
+        }
+        else if (palm4X > canvasWidth){
+            palm4X = 0;
+        }
+        document.getElementById("palm4").style.top = `${palm4Y}px`;
+        document.getElementById("palm4").style.left = `${palm4X}px`;
+    }
+
+    function startGame(){
+        window.alert("Click to start");
+        audio.play();
+        player.movePlayer();
+        setInterval(player.movePlayer, 10);
+        setInterval(movePalms, 10);
+        // Create the interval for the random effects
+        if (DORANDOMEVENTS === true){
+            setTimeout(startRandomEvents, 5000);
+        }
+    }
+
+    document.body.onkeydown = function(e) {
+        if (e.keyCode == 65) {
+            playerDirection -= 1;
+            if (playerDirection < 0){
+                playerDirection = 3;
+            }
+            //window.alert(`Moved Left ${playerXPosition}, ${playerYPosition}`);
+        }
+        else if (e.keyCode == 68){
+            playerDirection += 1;
+        }
+        if (e.keyCode == 87){
+            speed += 1;
+            if (speed >= -2 && speed <= 0) {
+                speed = 3;
+            }
+        }
+        else if (e.keyCode == 83){
+            speed -= 1;
+            if (speed <= 2 && speed >= 0) {
+                speed = -3;
+            }
+        }
+    }
+    
+    function startRandomEvents(){
+        window.alert("Hello, I'm a message. I hope you're ready because I am!");
+        setInterval(RandomEvent, 1000);
+    }
+
+</script>
