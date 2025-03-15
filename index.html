@@ -305,9 +305,6 @@
     }
 
     function startGame(){
-        for (i = 0; i < 7; i++){
-            openWindow = window.open(articles[0], "_blank", `fullscreen=0,height=${height},width=${width},top=${positionY},left=${positionX}`);
-        }
         window.alert("Click to start. If you're playing this game for the first time, you will need to click the icon at the right of the search bar to allow all popups from this website when it appears");
         audio.play();
         player.movePlayer();
