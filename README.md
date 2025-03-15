@@ -1,6 +1,7 @@
 # WikiCarWebsite
 HOW TO USE:
 To use this project, simply download the directory and run the wikicargame.html file. 
+Make sure to disable popup disabling else the code will not function correctly
 
 OBJECT OF THE GAME:
 The object of the game is to get around the track and reach the end. You will be awarded a lap for each time you pass the finish line. How do we know if you complete the full lap? Don't worry. We know.
