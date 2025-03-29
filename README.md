@@ -1,4 +1,6 @@
 # WikiCarWebsite
+A project made at the Scrapyard hackathon 2025
+
 # How to use
 To use this project, simply download the directory and run the wikicargame.html file. 
 Make sure to disable popup disabling else the code will not function correctly
