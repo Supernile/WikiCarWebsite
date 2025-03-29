@@ -14,10 +14,13 @@ Press d and a to change the direction of the vehicle. (a rotates clockwise and d
 
 And be prepared for the unexpected...
 
-Project Authors: Eesa Aslam, Andrew Volovich and Thesupernile
-
 # Screenshots
 
 ![image](https://github.com/user-attachments/assets/c755fb47-0c07-4ca5-bfb5-0beeffd783a1)
 
 ![image](https://github.com/user-attachments/assets/60aae303-6b65-4f1d-b854-36ea27658a47)
+
+
+# Authors
+
+Project Authors: Eesa Aslam, Andrew Volovich and Thesupernile
